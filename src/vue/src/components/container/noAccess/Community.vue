@@ -6,13 +6,13 @@
         <router-link @click="changeCodeDetail(1);
                             emptyInputBox();
                             step=0;
-                            category='free';
+                            category='1';
                             "
                      class ="board-direction" to="/community/free">자유게시판</router-link>
         <router-link @click="changeCodeDetail(33);
                             emptyInputBox();
                             step=0;
-                            category='qna';
+                            category='33';
                             "
                      class ="board-direction" to="/community/qna">문의 게시판</router-link>
         <button  @click="[click(), step=1, this.changeUpdateCheck()]" class="board-direction" :disabled="blockWrite == true">글 작성</button>
@@ -49,7 +49,7 @@ export default {
       key: "",
       selected : 'All',
       step : 0,
-      category : "free",
+      category : "1",
       isOpen : false,
     }
   },
@@ -117,7 +117,9 @@ export default {
     }
   },
   mounted() {
+    <!-- getBoardList, getBoardNum parmeter추가-->
     this.getBoardList()
+    this.getBoardNum()
   }
 }
 </script>

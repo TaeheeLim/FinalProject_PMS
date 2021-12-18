@@ -3,6 +3,7 @@
         <div id="write-btn">
             <button type="button" @click="insert">등록</button>
         </div>
+        {{ this.category }}
 </template>
 
 <script>
@@ -32,25 +33,82 @@ export default {
         exportContent(item) {
             console.log(item)
         },
+
+        convertFileSize(fileSize){
+          let str
+          //MB 단위 이상일때 MB 단위로 환산
+          if (fileSize >= 1024 * 1024) {
+            fileSize = fileSize / (1024 * 1024);
+            str = fileSize + ' MB';
+          }
+          //KB 단위 이상일때 KB 단위로 환산
+          else if (fileSize >= 1024) {
+            fileSize = fileSize / 1024;
+            str = fileSize + ' KB';
+          }
+          //KB 단위보다 작을때 byte 단위로 환산
+          else {
+            str = fileSize + ' byte';
+          }
+          return str;
+        },
         
-        //게시글 insert
         getContent(e) {
-            // console.log('아아아아아앙')
-            var board = {
-                //jwt에서 회원 고유번호 or Token 꺼내와서 담아주기
-                idx : "",
-                //게시글 내용
-                // text : e._data,
-                //date는 DB에서 SYSDATE로 처리
-                date : '',
-                isDelete : "N",
-                category : this.category,
-                file : e._file,
+            let fileAt = ''
+            let fileSize = ''
+            let fileNameAndExtension = []
+            let formData = new FormData()
+
+            if(e._file !== ''){
+              fileAt = 'Y'
+              fileSize = this.convertFileSize(e._file.size)
+              fileNameAndExtension = e._file.name.split('.')
+              formData.append('file', e._file)
+            } else {
+              fileAt = 'N'
             }
-            console.log(board)
-            // this.axios.post('',null, { params : { data : board}}).then(e => {
-            //     console.log(e)
-            // })
+            // const board = {
+            //     //jwt에서 회원 고유번호 or Token 꺼내와서 담아주기
+            //   token : "안뇽",
+            //   boardCn : e._data,
+            //   boardDate : '',
+            //   delAt : "N",
+            //   codeDetail : this.category,
+            //   totalComments : 0,
+            //   totalLikes : 0,
+            //
+            //   file : e._file,
+            //   fileAt : fileAt,
+            //   fileSize : fileSize,
+            //   fileName : fileNameAndExtension[0],
+            //   extensionName : fileNameAndExtension[1],
+            // }
+            this.axios.post('/insertBoard', null,
+                          { params : {
+
+                              token : "안뇽",
+                              boardCn : e._data,
+                              boardDate : '',
+                              delAt : "N",
+                              'codeDetail.codeDetailIdx' : this.category,
+                              totalComments : 0,
+                              totalLikes : 0,
+                              fileAt : fileAt,
+
+                              fileSize : fileSize,
+                              fileName : fileNameAndExtension[0],
+                              extensionName : fileNameAndExtension[1],
+                          }})
+                      .then(e => {
+
+                          console.log(e)
+                      })
+
+            this.axios.post("/insertFile", formData,
+                        { headers: { 'Content-Type': 'multipart/form-data' } })
+                            .then(e => {
+                              console.log(e)
+                            })
 
         }
     },

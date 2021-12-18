@@ -1,7 +1,8 @@
 <template>
 <div @scroll="getArticle" class="router-wrapper">
     <div class="router-wrapper2">
-        <div class="board" v-for="(item, index) in this.boardList" :key="index">
+        <div v-for="(item, index) in this.boardList" :key="index">
+          <div class="board" v-if="item.delAt === 'N'">
           <div class="null-content" v-if="item.isNull">{{item.content}}</div>
           <div v-else>
             <div class="name-div">
@@ -18,7 +19,7 @@
                             v-if="this.updateCheck == false"></i>
                     </div>
                     <div class="icon-div">
-                        <i @click="deleteBoard(item)" class="far fa-trash-alt"></i>
+                        <i @click="confirmDelete(item)" class="far fa-trash-alt"></i>
                     </div>
                     <!-- 밑의 div에다가 update axios를 하는 메소드 이름을 @click에다가 추가-->
                 </div>
@@ -64,6 +65,7 @@
         <span id="goback">
             <button id="goback-btn" @click="backToFirst">처음으로</button>
         </span>
+        </div>
     </div>
 </div>
 </template>
@@ -166,7 +168,6 @@ export default {
             if(this.articlesOnView === this.numberOfArticle) {
                 return
             }
-
             const fullSroll = e.target.scrollHeight
             const nowScroll = e.target.scrollTop
 
@@ -177,15 +178,30 @@ export default {
                 this.getMoreList()
             }
         },
-        //게시판 삭제
-        deleteBoard(item){
-            this.axios
-                .delete('', null, {params : {
-                                    board : item,
-                                    token : sessionStorage.getItem('token')}})
-                .then(() =>{})
-                .catch(() => {})
+        confirmDelete(item){
+          if (confirm("해당 게시글을 정말 삭제하시겠습니까?")){
+            this.deleteBoard(item)
+          }
         },
+
+        //게시판 삭제
+        // token : sessionStorage.getItem('token')
+        deleteBoard(item){
+          this.axios
+              .get('/DeleteBoard',{
+                        params : {
+                                  boardIdx : item.boardIdx,
+                        }})
+              .then(e =>{
+                if(e.data === true){
+                  item.delAt = 'Y'
+                } else {
+                  alert('삭제를 실패했습니다.')
+                }
+              })
+        },
+
+
         //게시판 수정
         updateBoard(item){
             this.axios
@@ -268,7 +284,7 @@ export default {
 }
 
 .content-div {
-    height: 300px;
+    height: fit-content;
     color: white;
     width: 100%;
 }
@@ -387,5 +403,10 @@ img {
 #goback-btn {
   color: #fff;
   padding: 5px;
+}
+
+.null-content {
+  font-size: 20px;
+  color: #fff;
 }
 </style>

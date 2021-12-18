@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardDSLRepository {
@@ -16,5 +17,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardDSLRep
 
     List<Comment> getComments(long boardIdx, int commentsOnView);
 
+    Board findByBoardIdx(long boardIdx);
 
+    long deleteByBoardIdx(long boardIdx);
 }

@@ -73,7 +73,7 @@ const community = {
         // 해당 게시물 댓글 리스트에 댓글 추가
         addingToCommentList(state, payload) {
             state
-            payload.board.댓글.push(...payload.commentList)
+            payload.board.commentList.push(...payload.commentList)
         },
 
         //----------------댓글 관련!!!-------------------
@@ -156,6 +156,7 @@ const community = {
         },
 
         getBoardNum(context) {
+            console.log('오니')
             axios.get('/getArticleNum', {
                     params : {
                         key : context.state.key,
@@ -221,21 +222,25 @@ const community = {
         extraComments(context, item) {
             //엑시오스 호출
             //이 부분에에서 { params : { idx : item.idx, number : this.commentsOnView}}넘겨줌.. 12개
-            axios.get('/BoardComment.json').then(e => {
-                for (let item of e.data) {
-                    item.isOpen = false
-                    item.isUpdate = false
-                    item.isFinish = false
-                    item.isModify = true
-                }
-                item.commentsOnView += e.data.length;
-                const payload = {
-                    board: item,
-                    commentList: e.data
-                }
-                //가져온 데이터 뮤테이션으로 바꿔주기
-                context.commit('addingToCommentList', payload)
-            })
+            axios.get('/BoardComment', { params : {
+                boardIdx : item.boardIdx,
+                commentsOnView : item.commentsOnView,
+                }})
+                .then(e => {
+                    for (let item of e.data) {
+                        item.isOpen = false
+                        item.isUpdate = false
+                        item.isFinish = false
+                        item.isModify = true
+                    }
+                    item.commentsOnView += e.data.length;
+                    const payload = {
+                        board: item,
+                        commentList: e.data
+                    }
+                    //가져온 데이터 뮤테이션으로 바꿔주기
+                    context.commit('addingToCommentList', payload)
+                })
         }
     }
 }

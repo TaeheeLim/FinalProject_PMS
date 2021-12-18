@@ -35,7 +35,9 @@ public class Board {
     private CodeDetail codeDetail;
     private String fileAt;
 
-
+    public void changeDelAt(String delAt) {
+        this.delAt = delAt;
+    }
 
     public BoardDTO entityToDto() {
         BoardDTO build = BoardDTO.builder()

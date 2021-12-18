@@ -2,24 +2,22 @@
   <div v-if="board.열렸니" class="comment-input-div">
     <div>
       <ul>
-        <li class="comment-li" v-for="(item, index) in board.댓글" :key="index">
+        <li class="comment-li" v-for="(item, index) in board.commentList" :key="index">
           <div class="content-wrapper">
             <div class="info-wrapper">
-              <span class="name">{{item.name}}</span>            
-              <span class="date">{{item.date}}</span>            
+              <span class="name">{{item.member.memNick}}</span>
+              <span class="date">{{item.answerDate}}</span>
             </div>
-            <textarea @keyup="update" class="text-area" :value="item.content" :readonly="item.isModify"></textarea>
+            <textarea @keyup="update" class="text-area" :value="item.answerCn" :readonly="item.isModify"></textarea>
           </div>
           <div>
             <i @click="this.changeCommentsIsOpen(item)" v-if="item.isOpen==false" class="fas fa-ellipsis-h"></i>
-            
             <!-- 여기서 토큰 값을 비교해서 본인의 게시글일 경우 수정,삭제 아이콘을 보여주고
                   본인의 글이 아니면 신고 버튼을 보여준다. v-if를 통해서
                   <div>
                     <i>신고</i>
                   </div>
             -->
-            
             <div class="box" v-if="item.isOpen==true && item.isFinish == false">
               <i @click="toUpdate(item); this.changeIsFinish(item)" class="fas fa-edit"></i>
               <i @click="deleteComment" class="far fa-trash-alt"></i>
@@ -31,9 +29,11 @@
           </div>
         </li>  
       </ul>
-      <button v-if="board.댓글수 - board.댓글.length !== 0"
-              id="more-btn"
-              @click="this.extraComments(board)">더 보기</button>
+      <div id="btn-div">
+        <button v-if="board.totalComments - board.commentList.length !== 0"
+                id="more-btn"
+                @click="this.extraComments(board)">더 보기</button>
+      </div>
     </div>
   </div>
 </template>
@@ -95,7 +95,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .comment-input-div {
   padding-right: 20px;
   padding-left: 20px;
@@ -108,16 +108,17 @@ export default {
 .comment-li {
   margin-top: 20px;
   display: flex;
-  width: fit-content;
+  width: 100%;
   align-items: center;
 }
 
 .content-wrapper {
   background-color: #414556;
   padding: 10px;
-  margin-right: 10px;
   font-size: 14px;
   border-radius: 5px;
+  width: 100%;
+  height: fit-content;
 }
 
 .info-wrapper {
@@ -150,9 +151,11 @@ i {
     padding-right: 20px;
     padding-bottom: 20px;
 }
+
 #comment-btn {
   color: black;
 }
+
 textarea {
   background-color: #414556;
   color: #fff;
@@ -164,7 +167,21 @@ textarea {
   padding: 0;
   overflow: hidden;
 }
+
 #finish-id {
   cursor: pointer;
+}
+
+#btn-div {
+  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+#btn-div > button {
+  color: white;
+  background-color: coral;
+  border-radius: 10px;
+  padding: 5px 10px;
 }
 </style>

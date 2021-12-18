@@ -14,4 +14,7 @@ public interface BoardService {
     long getArticleNum(String keyword, String selected, String codeDetails);
 
     List<CommentDTO> getComments(long boardIdx, int commentsOnView);
+
+    boolean deleteBoard(long boardIdx);
+
 }

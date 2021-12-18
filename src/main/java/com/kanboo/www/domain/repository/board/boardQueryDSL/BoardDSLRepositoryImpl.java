@@ -92,6 +92,7 @@ public class BoardDSLRepositoryImpl implements BoardDSLRepository{
                 .from(board, member)
                 .where(board.codeDetail.codeDetailIdx.eq(codeDetails)
                         .and(board.member.memIdx.eq(member.memIdx))
+                        .and(board.delAt.eq("N"))
                         .and(booleanBuilder)
                         .and((JPAExpressions
                                 .select(reports.count())
@@ -121,5 +122,7 @@ public class BoardDSLRepositoryImpl implements BoardDSLRepository{
                         .limit(5)
                         .fetch();
     }
+
+
 
 }

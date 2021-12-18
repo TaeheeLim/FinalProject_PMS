@@ -1,5 +1,6 @@
 package com.kanboo.www.dto.board;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kanboo.www.domain.entity.board.Board;
 import com.kanboo.www.domain.entity.board.BoardReport;
 import com.kanboo.www.domain.entity.board.Comment;
